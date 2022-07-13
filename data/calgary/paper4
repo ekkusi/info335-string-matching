@@ -1,0 +1,124 @@
+.EQ
+delim $$
+.EN
+.ls 1
+.ce
+PROGRAMMING BY EXAMPLE REVISITED
+.sp
+.ce
+by John G. Cleary
+.ce
+Man-Machine Systems Laboratory
+.ce
+University of Calgary.
+.sp
+.sh "Introduction"
+.pp
+Efforts to construct an artificial intelligence have relied on
+ever more complex and carefully prepared programs.  While useful in
+themselves, these programs
+are unlikely to be useful in situations where ephemeral and
+low value knowledge must be acquired.  For example a person (or robot)
+working in a normal domestic environment knows a lot about which
+cupboards have sticky doors and where the marmalade is kept.  It seems
+unlikely that it will ever be economic to program such knowledge 
+whether this be via a language or a discourse with an expert system.
+.pp
+It is my thesis, then, that any flexible robot system working in the
+real world must contain a component of control intermediate
+between hard wired 'reflex' responses and complex intellectual 
+reasoning.  Such an intermediate system must be adaptive, be able
+to carry out complex patterned responses and be fast in operation.
+It need not, however, carry out complex forward planning or be capable
+of introspection (in the sense that expert systems are able to explain
+their actions).
+.pp
+In this talk I will examine a system that acquires knowledge by 
+constructing a model of its input behaviour and uses this to select its
+actions.  It can be viewed either as an automatic adaptive system  or
+as an instance of 'programming by example'.  Other workers have
+attempted to do this, by constructing compact models in some appropriate
+programming language:e.g. finite state automata [Bierman, 1972], 
+[Bierman and Feldman, 1972]; LISP [Bierman and Krishnaswamy, 1976]; 
+finite non-deterministic
+automata [Gaines,1976], [Gaines,1977],
+[Witten,1980]; high level languages [Bauer, 1979], [Halbert, 1981].
+These efforts, however, suffer from
+the flaw that for some inputs their computing time is 
+super-exponential in the number
+of inputs seen.  This makes them totally impractical in any system which
+is continuously receiving inputs over a long period of time.
+.pp
+The system I will examine comprises one or more simple independent
+models.  Because of their simplicity and because no attempt is made to 
+construct models which are minimal,
+the time taken to store new information and to make 
+predictions is constant and independent of the amount of information stored
+[Cleary, 1980].  This leads to a very integrated and responsive environment.
+All actions by the programmer are immediately incorporated into the program
+model. The actions are also acted upon so that their consequences are 
+immediately apparent.
+However, the amount of memory used could grow 
+linearly with time. [Witten, 1977] introduces a modelling system related
+to the one here which does not continually grow and which can be updated
+incrementally.
+.pp
+It remains to be shown that the very simple models used are capable 
+of generating any
+interestingly complex behaviour.
+In the rest of this
+talk I will use the problem of executing a subroutine to illustrate
+the potential of such systems.
+The example will also illustrate some of the techniques which have been
+developed for combining multiple models, [Cleary, 1980], [Andreae
+and Cleary, 1976], [Andreae, 1977], [Witten,1981].  It has also been
+shown in [Cleary, 1980] and in [Andreae,1977] that such systems can
+simulate any Turing machine when supplied with a suitable external memory.
+.sh "The modelling system"
+.pp
+Fig. 1 shows the general layout of the modeller.  Following the flow
+of information through the system it first receives a number of inputs
+from the external world.  These are then used to update the current
+contexts of a number of Markov models.  Note, that each Markov model
+may use different inputs to form its current context, and that they
+may be attempting to predict different inputs.  A simple robot
+which can hear and move an arm might have two models; one, say, in
+which the last three sounds it heard are used to predict the next
+word to be spoken, and another in which the last three sounds and the last
+three arm movements are used to predict the next arm movement. 
+.pp
+When the inputs are received each such context and its associated 
+prediction (usually
+an action) are added to the Markov model.  (No
+counts or statistics are maintained \(em they are not necessary.)  When the
+context recurs later it will be retrieved along with all the predictions
+which have been stored with it.
+.pp
+After the contexts have been stored they 
+are updated by shifting in the new inputs. These new contexts are then
+matched against the model and all the associated predictions are retrieved.
+These independent predictions from the individual Markov models
+are then combined into a single composite 
+prediction.
+(A general theory of how to do this has been
+developed in [Cleary, 1980]).  
+.pp
+The final step is to present this 
+composite prediction to a device I have called the 'choice oracle'.
+This uses whatever information it sees fit to choose the next action.
+There are many possibilities for such a device.  One might be to choose
+from amongst the predicted actions if reward is expected and to choose
+some other random action if reward is not expected.  The whole system then 
+looks like
+a reward seeking homeostat.  At the other extreme the oracle might be
+a human programmer who chooses the next action according to his own
+principles.  The system then functions more like a programming by
+example system \(em [Witten, 1981] and [Witten, 1982] give examples of such 
+systems.
+[Andreae, 1977] gives an example of a 'teachable' system lying between
+these two extremes.
+.pp
+After an action is chosen this is
+transmitted to the external world and the resultant inputs are used
+to start the whole cycle again.  Note that the chosen action will
+be an input on the next cycle.
